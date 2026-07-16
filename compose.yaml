@@ -1,0 +1,22 @@
+services:
+  candidate-service:
+    build: .
+    environment:
+      PROVIDER_URL: http://provider-simulator:8081
+      DATABASE_PATH: /data/candidate.sqlite3
+    ports:
+      - "8080:8080"
+    volumes:
+      - candidate-data:/data
+
+  provider-simulator:
+    image: ghcr.io/fintech-dev-lab/internship-provider-simulator:v0.2.0
+    environment:
+      CALLBACK_URL: http://candidate-service:8080/receipts
+    ports:
+      - "8081:8081"
+    depends_on:
+      - candidate-service
+
+volumes:
+  candidate-data:
